@@ -29,7 +29,7 @@ module Omniturize
     end
     
     def js_vars(action)
-      output = (find_meta_vars(action) + find_meta_vars).uniq_by(&:name).map{|x| x.to_var(controller)}.inject([]) do |query, var|
+      output = (find_meta_vars(action) + find_meta_vars).uniq(&:name).map{|x| x.to_var(controller)}.inject([]) do |query, var|
         query << var_to_js(var) if var.value.present?
         query
       end.join(";\n")
@@ -45,14 +45,14 @@ module Omniturize
     end
 
     def print_js_events(action)
-      events = (find_meta_events(action) + find_meta_events).uniq_by(&:name).map{|event| event.to_var(controller)}.inject([]) do |values, event|
+      events = (find_meta_events(action) + find_meta_events).uniq(&:name).map{|event| event.to_var(controller)}.inject([]) do |values, event|
         (values << event.value) if event.value.present?
       end.join(',')
       events.blank? ? nil : "s.events=\"#{events}\";"
     end
 
     def print_js_snippets(action)
-      (find_meta_js_snippets(action) + find_meta_js_snippets).uniq_by(&:name).map{|snippet| snippet.to_var(controller)}.inject([]) do |snippets, snippet|
+      (find_meta_js_snippets(action) + find_meta_js_snippets).uniq(&:name).map{|snippet| snippet.to_var(controller)}.inject([]) do |snippets, snippet|
         (snippets << snippet.value) if snippet.value.present?
       end.join("\n")
     end
