@@ -21,6 +21,8 @@ module Omniturize
         @reporter ||=  begin
           "#{options[:reporter].classify.pluralize}Reporter".constantize.new(self)
         rescue NameError
+          "#{options[:reporter].classify.deconstantize}::BasicReporter".constantize.new(self)
+        rescue NameError
           BasicReporter.new(self)
         end
       end
