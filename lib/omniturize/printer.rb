@@ -6,7 +6,7 @@ module Omniturize
       base_url =  ssl == :ssl ? Omniturize::ssl_url : Omniturize::base_url
       "#{base_url}/b/ss/#{suite}/#{Omniturize::version}/#{rand(9999999)}?#{query}"
     end
-    
+
     def js(options = {})
       html_options = []
       options[:html_options].each_pair{|k,v| html_options << "#{k}=\"#{v}\""} if options[:html_options].present?
@@ -20,14 +20,14 @@ module Omniturize
         </script>
       JS
     end
-    
+
     def query(options = {})
       vars(controller).inject([]) do |query, var|
         query << var_to_query(var) if var.value && var.value != ""
         query
       end.join('&')
     end
-    
+
     def js_vars(action)
       output = (find_meta_vars(action) + find_meta_vars).uniq(&:name).map{|x| x.to_var(controller)}.inject([]) do |query, var|
         query << var_to_js(var) if var.value.present?
@@ -56,19 +56,23 @@ module Omniturize
         (snippets << snippet.value) if snippet.value.present?
       end.join("\n")
     end
-    
+
     private
 
     def var_to_query(var)
       "#{ CGI::escape(var.name) }=#{ CGI::escape(var.value) }" if var
     end
-    
+
     def var_to_js(var)
-      %Q{\t#{Omniturize::var_prefix + '.' if Omniturize::var_prefix}#{var_name(var)}="#{var.value}"} if var
+      %Q{\t#{Omniturize::var_prefix + '.' if (Omniturize.method_defined?(:var_prefix) && Omniturize::var_prefix)}#{var_name(var)}="#{var.value}"} if var
     end
 
     def var_name(var)
-      Omniturize::aliases && Omniturize::aliases[var.name.to_s] ? Omniturize::aliases[var.name.to_s] : var.name
+      if Omniturize.method_defined? :aliases
+        Omniturize::aliases && Omniturize::aliases[var.name.to_s] ? Omniturize::aliases[var.name.to_s] : var.name
+      else
+        var.name
+      end
     end
   end
 end
