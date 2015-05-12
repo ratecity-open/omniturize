@@ -64,7 +64,7 @@ module Omniturize
     end
 
     def var_to_js(var)
-      %Q{\t#{Omniturize::var_prefix + '.' if Omniturize.method_defined?(:var_prefix) && Omniturize::var_prefix}#{var_name(var)}="#{var.value}"} if var
+      %Q{\t#{Omniturize::var_prefix + '.' if (Omniturize.method_defined?(:var_prefix) && Omniturize::var_prefix)}#{var_name(var)}="#{var.value}"} if var
     end
 
     def var_name(var)
