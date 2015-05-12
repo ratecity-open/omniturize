@@ -18,12 +18,14 @@ module Omniturize
       private
 
       def set_reporter(options = {})
-        @reporter ||=  begin
+        @reporter ||= begin
           "#{options[:reporter].classify.pluralize}Reporter".constantize.new(self)
         rescue NameError
+          begin
           "#{options[:reporter].classify.deconstantize}::BasicReporter".constantize.new(self)
-        rescue NameError
-          BasicReporter.new(self)
+          rescue NameError
+            BasicReporter.new(self)
+          end
         end
       end
 
