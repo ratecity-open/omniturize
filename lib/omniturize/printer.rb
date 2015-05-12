@@ -68,7 +68,11 @@ module Omniturize
     end
 
     def var_name(var)
-      Omniturize::aliases && Omniturize::aliases[var.name.to_s] ? Omniturize::aliases[var.name.to_s] : var.name
+      if Omniturize.method_defined? :aliases
+        Omniturize::aliases && Omniturize::aliases[var.name.to_s] ? Omniturize::aliases[var.name.to_s] : var.name
+      else
+        var.name
+      end
     end
   end
 end
